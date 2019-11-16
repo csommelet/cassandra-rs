@@ -141,11 +141,11 @@ impl Cluster {
 
 
     /// Sets the SSL context and enables SSL
-    pub fn set_ssl(&mut self, ssl: &mut Ssl) -> &Self {
+    pub fn set_ssl(&mut self, ssl: &mut Ssl) -> &mut Self {
         unsafe {
             cass_cluster_set_ssl(self.0, ssl.inner());
-            self
         }
+        self
     }
 
     /// Performs a blocking call to connect to Cassandra cluster
@@ -342,7 +342,7 @@ impl Cluster {
     ///
     /// Default: 5000ms
     #[allow(cast_possible_truncation,cast_sign_loss)]
-    pub fn set_connect_timeout(&mut self, timeout: Duration) -> &Self {
+    pub fn set_connect_timeout(&mut self, timeout: Duration) -> &mut Self {
         unsafe {
             cass_cluster_set_connect_timeout(self.0, timeout.num_milliseconds() as u32);
         }
@@ -354,7 +354,7 @@ impl Cluster {
     ///
     /// Default: 12000ms
     #[allow(cast_possible_truncation,cast_sign_loss)]
-    pub fn set_request_timeout(&mut self, timeout: Duration) -> &Self {
+    pub fn set_request_timeout(&mut self, timeout: Duration) -> &mut Self {
         unsafe {
             cass_cluster_set_request_timeout(self.0, timeout.num_milliseconds() as u32);
         }
@@ -377,12 +377,11 @@ impl Cluster {
     ///
     /// The driver discovers all nodes in a cluster and cycles through
     /// them per request. All are considered 'local'.
-    pub fn set_load_balance_round_robin(&mut self) -> &Self {
+    pub fn set_load_balance_round_robin(&mut self) -> &mut Self {
         unsafe {
             cass_cluster_set_load_balance_round_robin(self.0);
-            self
-
         }
+        self
     }
 
     /// Configures the cluster to use DC-aware load balancing.
@@ -423,7 +422,7 @@ impl Cluster {
     /// This routing policy composes the base routing policy, routing
     /// requests first to replicas on nodes considered 'local' by
     /// the base load balancing policy.
-    pub fn set_token_aware_routing(&mut self, enabled: bool) -> &Self {
+    pub fn set_token_aware_routing(&mut self, enabled: bool) -> &mut Self {
         unsafe {
             cass_cluster_set_token_aware_routing(self.0, if enabled { cass_true } else { cass_false });
         }
@@ -439,7 +438,7 @@ impl Cluster {
     /// This routing policy is a top-level routing policy. It uses the
     /// base routing policy to determine locality (dc-aware) and/or
     /// placement (token-aware) before considering the latency.
-    pub fn set_latency_aware_routing(&mut self, enabled: bool) -> &Self {
+    pub fn set_latency_aware_routing(&mut self, enabled: bool) -> &mut Self {
         unsafe {
             cass_cluster_set_latency_aware_routing(self.0, if enabled { cass_true } else { cass_false });
         }
@@ -462,7 +461,7 @@ impl Cluster {
     #[allow(cast_sign_loss)]
     pub fn set_latency_aware_routing_settings(&mut self, exclusion_threshold: f64, scale: Duration,
         retry_period: Duration, update_rate: Duration, min_measured: u64)
-                                              -> &Self {
+                                              -> &mut Self {
         unsafe {
             cass_cluster_set_latency_aware_routing_settings(self.0,
                                                             exclusion_threshold,
@@ -485,7 +484,7 @@ impl Cluster {
     ///
     ///
     /// Examples: "127.0.0.1" "127.0.0.1,127.0.0.2", "server1.domain.com"
-    pub fn set_whitelist_filtering(&mut self, hosts: Vec<String>) -> &Self {
+    pub fn set_whitelist_filtering(&mut self, hosts: Vec<String>) -> &mut Self {
         unsafe {
             cass_cluster_set_whitelist_filtering(self.0, hosts.join(",").as_ptr() as *const i8);
         }
@@ -496,7 +495,7 @@ impl Cluster {
     ///
     ///
     /// <b>Default:</b> true (disables Nagel's algorithm).
-    pub fn set_tcp_nodelay(&mut self, enable: bool) -> &Self {
+    pub fn set_tcp_nodelay(&mut self, enable: bool) -> &mut Self {
         unsafe {
             cass_cluster_set_tcp_nodelay(self.0, if enable { cass_true } else { cass_false });
         }
@@ -508,7 +507,7 @@ impl Cluster {
     ///
     /// Default: false (disabled).
     #[allow(cast_possible_truncation,cast_sign_loss)]
-    pub fn set_tcp_keepalive(&mut self, enable: bool, delay: Duration) -> &Self {
+    pub fn set_tcp_keepalive(&mut self, enable: bool, delay: Duration) -> &mut Self {
         unsafe {
             cass_cluster_set_tcp_keepalive(self.0,
                                            if enable { cass_true } else { cass_false },
@@ -525,8 +524,8 @@ impl Cluster {
     pub fn set_timestamp_gen(&mut self, tsg: &TimestampGen) -> &mut Self {
         unsafe {
             cass_cluster_set_timestamp_gen(self.0, TimestampGen::inner(tsg));
-            self
         }
+        self
     }
 
     /// Sets the amount of time between heartbeat messages and controls the amount
@@ -540,8 +539,8 @@ impl Cluster {
     pub fn set_connection_heartbeat_interval(&mut self, hearbeat: Duration) -> &mut Self {
         unsafe {
             cass_cluster_set_connection_heartbeat_interval(self.0, hearbeat.num_seconds() as u32);
-            self
         }
+        self
     }
 
     /// Sets the amount of time a connection is allowed to be without a successful
@@ -553,8 +552,8 @@ impl Cluster {
     pub fn set_connection_idle_timeout(&mut self, timeout: Duration) -> &mut Self {
         unsafe {
             cass_cluster_set_connection_idle_timeout(self.0, timeout.num_seconds() as u32);
-            self
         }
+        self
     }
 
     /// Sets the retry policy used for all requests unless overridden by setting
@@ -570,8 +569,8 @@ impl Cluster {
     pub fn set_retry_policy(&mut self, retry_policy: RetryPolicy) -> &mut Self {
         unsafe {
             cass_cluster_set_retry_policy(self.0, retry_policy.inner());
-            self
         }
+        self
     }
 
     /// Enable/Disable retrieving and updating schema metadata. If disabled
@@ -582,7 +581,7 @@ impl Cluster {
     ///
     ///
     /// Default: true (enabled).
-    pub fn set_use_schema(&mut self, enabled: bool) -> &Self {
+    pub fn set_use_schema(&mut self, enabled: bool) -> &mut Self {
         unsafe {
             cass_cluster_set_use_schema(self.0, if enabled { cass_true } else { cass_false });
         }
